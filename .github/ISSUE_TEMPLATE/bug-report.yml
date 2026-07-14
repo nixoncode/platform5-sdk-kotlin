@@ -1,0 +1,15 @@
+name: Bug Report
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: SDK Version
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+    validations:
+      required: true
