@@ -22,5 +22,5 @@ jobs:
         with:
           distribution: temurin
           java-version: ${{ matrix.jvm }}
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
       - run: ./gradlew build
