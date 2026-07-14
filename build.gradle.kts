@@ -14,7 +14,7 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:3.1.1")
     implementation("io.ktor:ktor-client-content-negotiation:3.1.1")
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.1.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
     testImplementation(kotlin("test"))
     testImplementation("io.ktor:ktor-client-mock:3.1.1")
 }
