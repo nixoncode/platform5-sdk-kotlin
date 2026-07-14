@@ -16,8 +16,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-      - uses: gradle/actions/setup-gradle@v4
-      - run: ./gradlew build
+      - run: gradle build
       - uses: softprops/action-gh-release@v3
         with:
           generate_release_notes: true
