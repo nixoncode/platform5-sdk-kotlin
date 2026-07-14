@@ -23,7 +23,7 @@ open class Client(
         expectSuccess = false
     }
 
-    suspend fun <T> request(
+    suspend inline fun <reified T> request(
         method: HttpMethod,
         path: String,
         body: Any? = null,
