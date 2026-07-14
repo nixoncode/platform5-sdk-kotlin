@@ -8,6 +8,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromJsonElement
 import java.util.UUID
 
 open class Client(
@@ -47,13 +48,14 @@ open class Client(
             throw toError(statusCode, response, requestId)
         }
 
-        val envelope = response.body<ApiResponse<T>>()
-        return envelope.data
+        val envelope = response.body<ApiResponse>()
+        val data = envelope.data ?: return null
+        return json.decodeFromJsonElement<T>(data)
     }
 
     private suspend fun toError(statusCode: Int, response: HttpResponse, requestId: String?): Platform5Exception {
         val body = try {
-            response.body<ApiResponse<Unit>>()
+            response.body<ApiResponse>()
         } catch (_: Exception) {
             null
         }
