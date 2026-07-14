@@ -1,5 +1,7 @@
 package platform5.sdk
 
+import io.ktor.http.HttpMethod
+
 class Platform5(
     apiKey: String,
     baseUrl: String = "http://localhost:8084",
@@ -11,6 +13,6 @@ class Platform5(
     val account = Account(client)
 
     suspend fun health() {
-        client.request<Unit>(io.ktor.http.HttpMethod.Get, "/health")
+        client.request(HttpMethod.Get, "/health")
     }
 }

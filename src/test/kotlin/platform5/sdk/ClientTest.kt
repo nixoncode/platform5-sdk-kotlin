@@ -5,6 +5,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import kotlin.test.*
 
 class ClientTest {
@@ -17,7 +18,7 @@ class ClientTest {
             respond(
                 content = body,
                 status = status,
-                headers = headersOf("X-Request-ID", listOf("req-123")),
+                headers = headersOf("X-Request-ID" to listOf("req-123")),
             )
         }
     }
@@ -39,7 +40,7 @@ class ClientTest {
     fun `health returns successfully`() = runTest {
         val engine = mockEngine(HttpStatusCode.OK to """{"success":true,"message":"OK"}""")
         val client = clientWithEngine(engine)
-        val result = client.request<Unit>(HttpMethod.Get, "/health")
+        val result = client.request(HttpMethod.Get, "/health")
         assertNull(result)
     }
 
@@ -57,11 +58,13 @@ class ClientTest {
             """.trimIndent(),
         )
         val client = clientWithEngine(engine)
-        val result = client.request<SendSMSResponse>(
+        val data = client.request(
             HttpMethod.Post, "/v1/sms/send",
             SendSMSRequest("+2547", "Hi", "B"),
             client.uuid(),
         )
+        assertNotNull(data)
+        val result = client.decode<SendSMSResponse>(data)
         assertNotNull(result)
         assertEquals("m1", result!!.messageId)
     }
@@ -73,7 +76,7 @@ class ClientTest {
         )
         val client = clientWithEngine(engine)
         assertFailsWith<Platform5Exception.Unauthorized> {
-            client.request<Unit>(HttpMethod.Get, "/health")
+            client.request(HttpMethod.Get, "/health")
         }
     }
 
@@ -93,7 +96,7 @@ class ClientTest {
         val client = clientWithEngine(engine)
         var caught: Platform5Exception.RateLimit? = null
         try {
-            client.request<Unit>(HttpMethod.Get, "/health")
+            client.request(HttpMethod.Get, "/health")
         } catch (e: Platform5Exception.RateLimit) {
             caught = e
         }

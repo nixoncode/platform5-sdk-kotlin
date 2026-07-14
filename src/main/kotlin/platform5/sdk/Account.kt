@@ -4,6 +4,7 @@ import io.ktor.http.HttpMethod
 
 class Account(private val client: Client) {
     suspend fun getBalance(): BalanceResponse {
-        return client.request(HttpMethod.Get, "/v1/balance") ?: error("empty response")
+        val data = client.request(HttpMethod.Get, "/v1/balance")
+        return client.decode<BalanceResponse>(data) ?: error("empty response")
     }
 }

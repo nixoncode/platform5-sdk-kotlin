@@ -11,6 +11,7 @@ class Email(private val client: Client) {
         bodyType: String? = null,
     ): SendEmailResponse {
         val req = SendEmailRequest(to, subject, body, bodyType, from)
-        return client.request(HttpMethod.Post, "/v1/email/send", req, client.uuid()) ?: error("empty response")
+        val data = client.request(HttpMethod.Post, "/v1/email/send", req, client.uuid())
+        return client.decode<SendEmailResponse>(data) ?: error("empty response")
     }
 }
