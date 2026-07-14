@@ -10,7 +10,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import java.util.UUID
 
-class Client(
+open class Client(
     private val apiKey: String,
     private val baseUrl: String = "http://localhost:8084",
 ) {

@@ -84,21 +84,22 @@ class ClientTest {
                 content = """{"success":false,"message":"Rate limited"}""",
                 status = HttpStatusCode(429, "Too Many Requests"),
                 headers = headersOf(
-                    "X-Request-ID", listOf("req-123"),
-                    "X-RateLimit-Limit", listOf("50"),
-                    "X-RateLimit-Remaining", listOf("3"),
+                    "X-Request-ID" to listOf("req-123"),
+                    "X-RateLimit-Limit" to listOf("50"),
+                    "X-RateLimit-Remaining" to listOf("3"),
                 ),
             )
         }
         val client = clientWithEngine(engine)
+        var caught: Platform5Exception.RateLimit? = null
         try {
             client.request<Unit>(HttpMethod.Get, "/health")
         } catch (e: Platform5Exception.RateLimit) {
-            assertEquals(50, e.limit)
-            assertEquals(3, e.remaining)
-            return
+            caught = e
         }
-        fail("Expected RateLimit exception")
+        assertNotNull(caught)
+        assertEquals(50, caught!!.limit)
+        assertEquals(3, caught!!.remaining)
     }
 }
 
