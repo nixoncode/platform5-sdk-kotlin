@@ -18,7 +18,10 @@ class ClientTest {
             respond(
                 content = body,
                 status = status,
-                headers = headersOf("X-Request-ID" to listOf("req-123")),
+                headers = headersOf(
+                    "X-Request-ID" to listOf("req-123"),
+                    "Content-Type" to listOf("application/json"),
+                ),
             )
         }
     }
@@ -88,6 +91,7 @@ class ClientTest {
                 status = HttpStatusCode(429, "Too Many Requests"),
                 headers = headersOf(
                     "X-Request-ID" to listOf("req-123"),
+                    "Content-Type" to listOf("application/json"),
                     "X-RateLimit-Limit" to listOf("50"),
                     "X-RateLimit-Remaining" to listOf("3"),
                 ),
