@@ -15,7 +15,7 @@ class Client(
     private val baseUrl: String = "http://localhost:8084",
 ) {
     private val json = Json { ignoreUnknownKeys = true }
-    private val http = HttpClient {
+    protected open val httpClient: HttpClient = HttpClient {
         install(ContentNegotiation) {
             json(json)
         }
@@ -28,7 +28,7 @@ class Client(
         body: Any? = null,
         idempotencyKey: String? = null,
     ): T? {
-        val response = http.request(baseUrl.trimEnd('/') + path) {
+        val response = httpClient.request(baseUrl.trimEnd('/') + path) {
             this.method = method
             header("X-API-Key", apiKey)
             header("Content-Type", "application/json")
