@@ -15,8 +15,9 @@ open class Client(
     private val apiKey: String,
     private val baseUrl: String = "http://localhost:8084",
 ) {
-    private val json = Json { ignoreUnknownKeys = true }
-    protected open val httpClient: HttpClient = HttpClient {
+    @PublishedApi internal val json = Json { ignoreUnknownKeys = true }
+
+    @PublishedApi internal val httpClient: HttpClient = HttpClient {
         install(ContentNegotiation) {
             json(json)
         }
@@ -45,37 +46,37 @@ open class Client(
         val statusCode = response.status.value
 
         if (statusCode >= 400) {
-            throw toError(statusCode, response, requestId)
+            throw errorFromResponse(statusCode, response, requestId)
         }
 
         val envelope = response.body<ApiResponse>()
         val data = envelope.data ?: return null
         return json.decodeFromJsonElement<T>(data)
     }
-
-    private suspend fun toError(statusCode: Int, response: HttpResponse, requestId: String?): Platform5Exception {
-        val body = try {
-            response.body<ApiResponse>()
-        } catch (_: Exception) {
-            null
-        }
-        val message = body?.message ?: response.status.description
-        val errors = body?.errors
-
-        return when (statusCode) {
-            401 -> Platform5Exception.Unauthorized(message, errors, requestId)
-            402 -> Platform5Exception.InsufficientBalance(message, errors, requestId)
-            403 -> Platform5Exception.Forbidden(message, errors, requestId)
-            404 -> Platform5Exception.NotFound(message, errors, requestId)
-            422 -> Platform5Exception.Validation(message, errors, requestId)
-            429 -> {
-                val limit = response.headers["X-RateLimit-Limit"]?.toIntOrNull() ?: 0
-                val remaining = response.headers["X-RateLimit-Remaining"]?.toIntOrNull() ?: 0
-                Platform5Exception.RateLimit(message, errors, requestId, limit, remaining)
-            }
-            else -> Platform5Exception.Generic(message, statusCode, errors, requestId)
-        }
-    }
-
-    fun uuid(): String = UUID.randomUUID().toString()
 }
+
+internal suspend fun errorFromResponse(statusCode: Int, response: HttpResponse, requestId: String?): Platform5Exception {
+    val body = try {
+        response.body<ApiResponse>()
+    } catch (_: Exception) {
+        null
+    }
+    val message = body?.message ?: response.status.description
+    val errors = body?.errors
+
+    return when (statusCode) {
+        401 -> Platform5Exception.Unauthorized(message, errors, requestId)
+        402 -> Platform5Exception.InsufficientBalance(message, errors, requestId)
+        403 -> Platform5Exception.Forbidden(message, errors, requestId)
+        404 -> Platform5Exception.NotFound(message, errors, requestId)
+        422 -> Platform5Exception.Validation(message, errors, requestId)
+        429 -> {
+            val limit = response.headers["X-RateLimit-Limit"]?.toIntOrNull() ?: 0
+            val remaining = response.headers["X-RateLimit-Remaining"]?.toIntOrNull() ?: 0
+            Platform5Exception.RateLimit(message, errors, requestId, limit, remaining)
+        }
+        else -> Platform5Exception.Generic(message, statusCode, errors, requestId)
+    }
+}
+
+fun Client.uuid(): String = UUID.randomUUID().toString()
