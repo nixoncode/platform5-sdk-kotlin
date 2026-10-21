@@ -14,7 +14,7 @@ import java.util.UUID
 
 open class Client(
     private val apiKey: String,
-    private val baseUrl: String = "http://localhost:8084",
+    private val baseUrl: String = "https://api.advantaplus.ai",
 ) {
     internal val json = Json { ignoreUnknownKeys = true }
 

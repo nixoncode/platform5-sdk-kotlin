@@ -4,7 +4,7 @@ import io.ktor.http.HttpMethod
 
 class Platform5(
     apiKey: String,
-    baseUrl: String = "http://localhost:8084",
+    baseUrl: String = "https://api.advantaplus.ai",
 ) {
     private val client = Client(apiKey, baseUrl)
     val sms = Sms(client)
