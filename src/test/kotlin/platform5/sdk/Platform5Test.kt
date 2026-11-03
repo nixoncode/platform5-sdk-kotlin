@@ -10,5 +10,6 @@ class Platform5Test {
         assertNotNull(p5.email)
         assertNotNull(p5.messages)
         assertNotNull(p5.account)
+        assertNotNull(p5.airtime)
     }
 }

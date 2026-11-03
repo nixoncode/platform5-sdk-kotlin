@@ -47,6 +47,12 @@ suspend fun main() {
 
     val status = client.messages.get("msg-uuid")
     val balance = client.account.getBalance()
+
+    val airtime = client.airtime.buy(
+        phoneNumber = "+254712345678",
+        amount = 100.0,
+    )
+    println(airtime.transactionId)
 }
 ```
 
@@ -58,6 +64,7 @@ suspend fun main() {
 | `client.email.send(to, subject, body, from, bodyType?)` | POST /v1/email/send |
 | `client.messages.get(id)` | GET /v1/messages/{id} |
 | `client.account.getBalance()` | GET /v1/balance |
+| `client.airtime.buy(phoneNumber, amount)` | POST /v1/airtime/buy |
 | `client.health()` | GET /health |
 
 ## Error Handling

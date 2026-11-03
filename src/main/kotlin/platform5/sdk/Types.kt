@@ -59,6 +59,24 @@ data class BalanceResponse(
 )
 
 @Serializable
+data class BuyAirtimeRequest(
+    @SerialName("phone_number") val phoneNumber: String,
+    val amount: Double,
+)
+
+@Serializable
+data class BuyAirtimeResponse(
+    @SerialName("transaction_id") val transactionId: String,
+    @SerialName("phone_number") val phoneNumber: String,
+    val amount: Double,
+    @SerialName("actual_cost") val actualCost: Double,
+    val status: String,
+    val reference: String? = null,
+    val provider: String? = null,
+    @SerialName("created_at") val createdAt: String,
+)
+
+@Serializable
 data class ApiResponse(
     val success: Boolean,
     val message: String,

@@ -11,6 +11,7 @@ class Platform5(
     val email = Email(client)
     val messages = Messages(client)
     val account = Account(client)
+    val airtime = Airtime(client)
 
     suspend fun health() {
         client.request(HttpMethod.Get, "/health")
